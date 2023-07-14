@@ -1,0 +1,73 @@
+package com.tue135897;
+
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Creeper;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.plugin.Plugin;
+
+import net.md_5.bungee.api.ChatColor;
+
+public class EventClass implements Listener {
+	private Plugin plugin = Main.getPlugin(Main.class);
+	
+	@EventHandler
+	public void onPlace(BlockPlaceEvent event) {
+		Player player = event.getPlayer();
+		Block block = event.getBlock();
+		Location loc = block.getLocation();				
+		
+		if(block.getType().equals(Material.REDSTONE_WIRE)) {
+			plugin.getServer().broadcastMessage(ChatColor.GOLD + "[AntiGriefBasic] " + ChatColor.RED + player.getName() + ChatColor.AQUA + " đã đặt " + block.getType().toString().toUpperCase() + " ở" + ChatColor.WHITE +" X:" + loc.getBlockX() + " Y:" + loc.getBlockY() + " Z:" + loc.getBlockZ() + " World: " + loc.getWorld().getName());
+			
+		}
+		
+		
+	}
+	@EventHandler
+	public void onCreeperExplode(EntityExplodeEvent event) {
+		Entity entity = event.getEntity();
+		if(entity instanceof Creeper) {
+		 		event.setCancelled(true);	
+		}
+	}
+    @EventHandler
+    public void onBlockExplode(EntityExplodeEvent event1) {
+    	String worldName = "world";
+    	if(event1.getLocation().getWorld().getName().equals(worldName) && (event1.getEntityType().equals(EntityType.PRIMED_TNT))) {
+    		event1.setCancelled(true);
+    		event1.getEntity().remove();
+    	}
+    }
+    @EventHandler
+    public void onCrystalExplode(EntityExplodeEvent event1) {
+    	if(event1.getEntityType().equals(EntityType.ENDER_CRYSTAL)) {
+    		event1.setCancelled(true);
+    	}
+    }
+    public void onCrystalDamage(EntityDamageEvent event2) {
+    	if(event2.getEntityType().equals(EntityType.ENDER_CRYSTAL)) {
+    		event2.setCancelled(true);
+    		event2.setDamage(0);
+    	}
+    }
+}	
+
+	
+	
+	
+	
+
+
+
+
+
+
